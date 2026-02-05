@@ -13,7 +13,6 @@ function App() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [copiedId, setCopiedId] = useState(null);
 
-  // 🔥 ChatGPT-style scroll state
   const [showScrollDown, setShowScrollDown] = useState(false);
   const userScrolledUp = useRef(false);
 
@@ -53,7 +52,6 @@ function App() {
     localStorage.setItem("theme", theme);
   }, [theme]);
 
-  // ✅ Auto-scroll ONLY if user didn't scroll up (ChatGPT behavior)
   useEffect(() => {
     if (!userScrolledUp.current) {
       bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -109,7 +107,7 @@ function App() {
     inputRef.current?.focus();
   };
 
-  /* ---------------- CHATGPT SCROLL LOGIC ---------------- */
+  /* ---------------- SCROLL ---------------- */
   const handleScroll = () => {
     const el = scrollRef.current;
     if (!el) return;
@@ -155,7 +153,7 @@ function App() {
     }, 18);
   };
 
-  /* ---------------- ASK QUESTION ---------------- */
+  /* ---------------- ASK ---------------- */
   const askQuestion = async () => {
     if (!question.trim() || !activeSession) return;
 
@@ -216,6 +214,20 @@ function App() {
           className="flex-1 overflow-y-auto px-4 py-6"
         >
           <div className="max-w-3xl mx-auto space-y-6">
+
+            {/* 🌈 EMPTY ANSWER PAGE */}
+            {activeSession?.messages.length === 0 && !loading && (
+              <div className="h-[60vh] flex items-center justify-center">
+                <h1
+                  className="text-3xl sm:text-4xl md:text-5xl font-semibold
+                  bg-gradient-to-r from-emerald-400 via-cyan-400 to-blue-500
+                  bg-clip-text text-transparent text-center"
+                >
+                  What’s on your mind today?
+                </h1>
+              </div>
+            )}
+
             {activeSession?.messages.map((m, i) => {
               const id = `${i}-${m.type}`;
               const iconBase =
@@ -276,22 +288,7 @@ function App() {
           </div>
         </div>
 
-        {/* 🔥 CHATGPT-EXACT SCROLL DOWN BUTTON */}
-        <div
-          className={`pointer-events-none absolute bottom-28 left-1/2 -translate-x-1/2
-          transition-all duration-200
-          ${showScrollDown ? "opacity-100 scale-100" : "opacity-0 scale-90"}`}
-        >
-          <button
-            onClick={scrollToBottom}
-            className="pointer-events-auto bg-zinc-700 hover:bg-zinc-600
-              text-white rounded-full p-2 shadow-lg"
-          >
-            <ChevronDown size={20} />
-          </button>
-        </div>
-
-        {/* INPUT BAR */}
+        {/* INPUT */}
         <div className={`border-t p-4 ${theme === "dark" ? "border-zinc-700" : "border-zinc-300"}`}>
           <div className={`max-w-3xl mx-auto flex rounded-2xl px-4 ${theme === "dark" ? "bg-zinc-800" : "bg-white border"}`}>
             <input
